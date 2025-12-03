@@ -1,0 +1,260 @@
+<!-- admin/seller-details.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Seller Application Review</title>
+        <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+        <script>
+            function showTab(tabId) {
+                document.querySelectorAll('.tab-content').forEach(function(tab) {
+                    tab.style.display = 'none';
+                });
+                document.getElementById(tabId).style.display = 'block';
+                document.querySelectorAll('.tab-link').forEach(function(link) {
+                    link.classList.remove('active');
+                });
+                document.getElementById(tabId + '-link').classList.add('active');
+            }
+            window.onload = function() {
+                showTab('identity');
+            };
+        </script>
+</head>
+<body style="background: #f7f8fa; font-family: 'Inter', Arial, sans-serif; margin: 0;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+        <style>
+            .card {
+                background: #fff;
+                border-radius: 1rem;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+                padding: 2rem;
+                transition: box-shadow 0.2s;
+            }
+            .card:hover {
+                box-shadow: 0 8px 32px rgba(37,99,235,0.09);
+            }
+            .tab-link.active {
+                border-bottom: 2px solid #2563eb;
+                color: #2563eb;
+            }
+            .tab-link {
+                padding-bottom: 4px;
+                transition: color 0.2s;
+            }
+            .tab-link:hover {
+                color: #1e40af;
+            }
+            .action-btn {
+                width: 100%;
+                border-radius: 0.5rem;
+                padding: 0.75rem;
+                font-weight: 600;
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+                transition: background 0.2s, color 0.2s;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            }
+            .action-btn.approve {
+                background: linear-gradient(90deg,#059669 60%,#34d399 100%);
+                color: #fff;
+                border: none;
+            }
+            .action-btn.approve:hover {
+                background: linear-gradient(90deg,#34d399 60%,#059669 100%);
+            }
+            .action-btn.reject {
+                background: linear-gradient(90deg,#ef4444 60%,#f87171 100%);
+                color: #fff;
+                border: none;
+            }
+            .action-btn.reject:hover {
+                background: linear-gradient(90deg,#f87171 60%,#ef4444 100%);
+            }
+            .action-btn.info {
+                background: #fff;
+                color: #2563eb;
+                border: 2px solid #2563eb;
+            }
+            .action-btn.info:hover {
+                background: #2563eb;
+                color: #fff;
+            }
+            .doc-link {
+                color: #2563eb;
+                text-decoration: underline;
+                font-weight: 500;
+                transition: color 0.2s;
+            }
+            .doc-link:hover {
+                color: #1e40af;
+            }
+        </style>
+        <!-- Header -->
+        <div style="background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1.5rem 2rem; margin-bottom: 2rem;">
+            <a th:href="@{/admin/dashboard}" style="color: #64748b; text-decoration: none; font-weight: 500;">
+                &larr; Back to Dashboard
+            </a>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 1rem;">
+                <div>
+                    <h1 style="color: #10162f; margin-bottom: 0.5rem;">Seller Application Review</h1>
+                    <p style="color: #64748b;">Review and verify seller documents</p>
+                </div>
+                <span th:text="${seller.applicationStatus}" class="badge" style="background: #f59e42; color: #fff; border-radius: 0.5rem; padding: 0.25rem 0.75rem; font-weight: 600; font-size: 0.95rem;">PENDING REVIEW</span>
+                                            <span th:text="${seller.applicationStatus}"
+                                                        th:classappend="${seller.applicationStatus == 'APPROVED'} ? 'badge bg-green-500' : (${seller.applicationStatus == 'REJECTED'} ? 'badge bg-red-500' : 'badge bg-amber-500')"
+                                                        style="border-radius: 0.5rem; padding: 0.25rem 0.75rem; font-weight: 600; font-size: 0.95rem;">
+                                                PENDING REVIEW
+                                            </span>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+            <!-- Seller Info Sidebar -->
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="display: inline-flex; align-items: center; justify-content: center; background: #e0e7ff; border-radius: 9999px; width: 80px; height: 80px; margin-bottom: 1rem;">
+                        <svg width="40" height="40" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20c0-2.5 3-4 6-4s6 1.5 6 4"/></svg>
+                    </div>
+                    <h2 th:text="${seller.user.fullName}" style="color: #10162f; margin-bottom: 0.25rem;"></h2>
+                    <span th:text="${seller.sellerType}" class="badge" style="background: #e0e7ff; color: #2563eb; border-radius: 0.5rem; padding: 0.25rem 0.75rem; font-weight: 600; font-size: 0.95rem;">Individual</span>
+                </div>
+                <div style="margin-bottom: 2rem;">
+                    <div style="color: #64748b; margin-bottom: 0.5rem;">Email</div>
+                    <div style="color: #10162f; margin-bottom: 1rem;" th:text="${seller.user.email}"></div>
+                    <div style="color: #64748b; margin-bottom: 0.5rem;">Phone</div>
+                    <div style="color: #10162f; margin-bottom: 1rem;" th:text="${seller.user.phone}"></div>
+                    <div style="color: #64748b; margin-bottom: 0.5rem;">Address</div>
+                    <div style="color: #10162f; margin-bottom: 1rem;" th:text="${seller.physicalAddress}"></div>
+                    <div style="color: #64748b; margin-bottom: 0.5rem;">National ID</div>
+                    <div style="color: #10162f; margin-bottom: 1rem;" th:text="${#strings.substring(seller.nationalIdOrPassport,0,4)+'************'+#strings.substring(seller.nationalIdOrPassport,seller.nationalIdOrPassport.length()-4)}"></div>
+                </div>
+                <div style="background: #e0e7ff; border-radius: 0.75rem; padding: 1rem; margin-bottom: 2rem;">
+                    <div style="color: #2563eb; font-weight: 600; margin-bottom: 0.5rem;">Submission Details</div>
+                    <div style="color: #2563eb;">Date: <span th:text="${seller.submittedDate}"></span></div>
+                    <div style="color: #2563eb;">ID: #<span th:text="${seller.id}"></span></div>
+                </div>
+                <!-- Action Buttons -->
+                <form th:action="@{'/admin/sellers/' + ${seller.id} + '/approve'}" method="post" style="margin-bottom: 1rem;">
+                    <button type="submit" class="action-btn approve">Approve Seller</button>
+                </form>
+                <form th:action="@{'/admin/sellers/' + ${seller.id} + '/reject'}" method="post" style="margin-bottom: 1rem;">
+                    <textarea name="reason" placeholder="Enter rejection reason..." required style="width: 100%; border-radius: 0.5rem; border: 1px solid #e5e7eb; padding: 0.5rem; margin-bottom: 0.5rem;"></textarea>
+                    <button type="submit" class="action-btn reject">Reject Application</button>
+                </form>
+                <form th:action="@{'/admin/sellers/' + ${seller.id} + '/request-info'}" method="post">
+                    <button type="submit" class="action-btn info">Request More Info</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2 style="color: #10162f; margin-bottom: 2rem;">Document Review</h2>
+                <div class="tabs" style="margin-bottom: 2rem;">
+                    <ul style="display: flex; gap: 1rem; margin-bottom: 0; border-bottom: 2px solid #e5e7eb;">
+                        <li><a href="javascript:void(0);" id="identity-link" class="tab-link active" onclick="showTab('identity')" style="color: #2563eb; font-weight: 600; padding: 0.75rem 1.5rem;">Identity</a></li>
+                        <li><a href="javascript:void(0);" id="financial-link" class="tab-link" onclick="showTab('financial')" style="color: #2563eb; font-weight: 600; padding: 0.75rem 1.5rem;">Financial</a></li>
+                        <li><a href="javascript:void(0);" id="legal-link" class="tab-link" onclick="showTab('legal')" style="color: #2563eb; font-weight: 600; padding: 0.75rem 1.5rem;">Legal</a></li>
+                    </ul>
+                </div>
+                <div id="identity" class="tab-content">
+                    <h3 style="color: #10162f; margin-bottom: 1.5rem;">Identity Documents</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="background: #e0e7ff; border-radius: 0.5rem; padding: 0.5rem;"><svg width="24" height="24" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20c0-2.5 3-4 6-4s6 1.5 6 4"/></svg></span>
+                                <div>
+                                    <div style="color: #10162f; font-weight: 600;">National ID Document</div>
+                                    <div style="color: #64748b; font-size: 0.95rem;">Uploaded: <span th:text="${seller.submittedDate}"></span></div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a th:href="${nationalIdDocUrl}" target="_blank" rel="noopener noreferrer" class="action-btn info" style="padding: 0.5rem 1rem; font-size: 0.95rem;" th:if="${nationalIdDocUrl != null}">Preview</a>
+                                <span th:if="${nationalIdDocUrl == null}" style="color: #b91c1c; font-size: 0.95rem;">Not uploaded</span>
+                                <a th:href="${nationalIdDocUrl}" download class="action-btn info" style="padding: 0.5rem 1rem; font-size: 0.95rem; margin-left: 0.5rem;" th:if="${nationalIdDocUrl != null}">Download</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: #f1f5f9; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1rem;">
+                        <div style="color: #10162f; font-weight: 600; margin-bottom: 0.5rem;">Additional Information</div>
+                        <div style="color: #64748b;">TIN Number: <span th:text="${seller.tinNumber}"></span></div>
+                    </div>
+                </div>
+                <div id="financial" class="tab-content" style="display:none;">
+                    <h3 style="color: #10162f; margin-bottom: 1.5rem;">Financial Documents</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="background: #e0e7ff; border-radius: 0.5rem; padding: 0.5rem;"><svg width="24" height="24" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 10h8M8 14h8"/></svg></span>
+                                <div>
+                                    <div style="color: #10162f; font-weight: 600;">Proof of Account Ownership</div>
+                                    <div style="color: #64748b; font-size: 0.95rem;">Uploaded: <span th:text="${seller.submittedDate}"></span></div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a th:href="${proofOfAccountOwnershipUrl}" target="_blank" rel="noopener noreferrer" class="action-btn info" style="padding: 0.5rem 1rem; font-size: 0.95rem;" th:if="${proofOfAccountOwnershipUrl != null}">Preview</a>
+                                <span th:if="${proofOfAccountOwnershipUrl == null}" style="color: #b91c1c; font-size: 0.95rem;">Not uploaded</span>
+                                <a th:href="${proofOfAccountOwnershipUrl}" download class="action-btn info" style="padding: 0.5rem 1rem; font-size: 0.95rem; margin-left: 0.5rem;" th:if="${proofOfAccountOwnershipUrl != null}">Download</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: #f1f5f9; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1rem;">
+                        <div style="color: #10162f; font-weight: 600; margin-bottom: 0.5rem;">Banking Information</div>
+                        <div style="color: #64748b;">Bank Account: <span th:text="${seller.bankAccountNumber}"></span></div>
+                        <div style="color: #64748b;">Bank Name: <span th:text="${seller.bankName}"></span></div>
+                        <div style="color: #64748b;">Mobile Money: <span th:text="${seller.mobileMoneyNumber}"></span></div>
+                    </div>
+                </div>
+                <div id="legal" class="tab-content" style="display:none;">
+                    <h3 style="color: #10162f; margin-bottom: 1.5rem;">Legal Documents</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="background: #e0e7ff; border-radius: 0.5rem; padding: 0.5rem;"><svg width="24" height="24" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 10h8M8 14h8"/></svg></span>
+                                <div>
+                                    <div style="color: #10162f; font-weight: 600;">Authorization Letter</div>
+                                    <div style="color: #64748b; font-size: 0.95rem;">Uploaded: <span th:text="${seller.submittedDate}"></span></div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a th:href="${authorizationLetterUrl}" target="_blank" rel="noopener noreferrer" class="action-btn info" style="padding: 0.5rem 1rem; font-size: 0.95rem;" th:if="${authorizationLetterUrl != null}">Preview</a>
+                                <span th:if="${authorizationLetterUrl == null}" style="color: #b91c1c; font-size: 0.95rem;">Not uploaded</span>
+                                <a th:href="${authorizationLetterUrl}" download class="action-btn info" style="padding: 0.5rem 1rem; font-size: 0.95rem; margin-left: 0.5rem;" th:if="${authorizationLetterUrl != null}">Download</a>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="background: #e0e7ff; border-radius: 0.5rem; padding: 0.5rem;"><svg width="24" height="24" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 10h8M8 14h8"/></svg></span>
+                                <div>
+                                    <div style="color: #10162f; font-weight: 600;">No-Dispute Declaration</div>
+                                    <div style="color: #64748b; font-size: 0.95rem;">Uploaded: <span th:text="${seller.submittedDate}"></span></div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a th:href="${noDisputeDeclarationUrl}" target="_blank" rel="noopener noreferrer" class="action-btn info" style="padding: 0.5rem 1rem; font-size: 0.95rem;" th:if="${noDisputeDeclarationUrl != null}">Preview</a>
+                                <span th:if="${noDisputeDeclarationUrl == null}" style="color: #b91c1c; font-size: 0.95rem;">Not uploaded</span>
+                                <a th:href="${noDisputeDeclarationUrl}" download class="action-btn info" style="padding: 0.5rem 1rem; font-size: 0.95rem; margin-left: 0.5rem;" th:if="${noDisputeDeclarationUrl != null}">Download</a>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="background: #e0e7ff; border-radius: 0.5rem; padding: 0.5rem;"><svg width="24" height="24" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 10h8M8 14h8"/></svg></span>
+                                <div>
+                                    <div style="color: #10162f; font-weight: 600;">Court Sale Authorization</div>
+                                    <div style="color: #64748b; font-size: 0.95rem;">Uploaded: <span th:text="${seller.submittedDate}"></span></div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a th:href="${courtSaleAuthorizationUrl}" target="_blank" rel="noopener noreferrer" class="action-btn info" style="padding: 0.5rem 1rem; font-size: 0.95rem;" th:if="${courtSaleAuthorizationUrl != null}">Preview</a>
+                                <span th:if="${courtSaleAuthorizationUrl == null}" style="color: #b91c1c; font-size: 0.95rem;">Not uploaded</span>
+                                <a th:href="${courtSaleAuthorizationUrl}" download class="action-btn info" style="padding: 0.5rem 1rem; font-size: 0.95rem; margin-left: 0.5rem;" th:if="${courtSaleAuthorizationUrl != null}">Download</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Feedback messages -->
+                <div th:if="${success}" style="background: #d1fae5; color: #059669; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; text-align: center; font-weight: 600;">Action completed successfully.</div>
+                <div th:if="${error}" style="background: #fee2e2; color: #b91c1c; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; text-align: center; font-weight: 600;">[[${error}]]</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

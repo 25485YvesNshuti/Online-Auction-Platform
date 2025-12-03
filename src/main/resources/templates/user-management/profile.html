@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+    <link rel="stylesheet" th:href="@{/css/profile.css}" />
+</head>
+<body>
+    <div class="profile-container">
+        <h2>My Profile</h2>
+        <!-- User info, edit form, etc. -->
+        <div style="margin: 1.5rem 0;">
+            <a th:href="@{/2fa/setup}" class="btn btn-primary" style="background:#2563eb;color:#fff;padding:0.7rem 1.5rem;border-radius:0.5rem;text-decoration:none;font-weight:600;">Set Up Two-Factor Authentication</a>
+        </div>
+        <a th:href="@{/dashboard}">Back to Dashboard</a>
+    </div>
+</body>
+</html>

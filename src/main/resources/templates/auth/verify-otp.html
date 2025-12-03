@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Verify Your Email</title>
+    <link rel="stylesheet" th:href="@{/css/verify-otp.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // OTP input auto-focus and auto-move
+            const inputs = Array.from(document.querySelectorAll('input[name^="digit"]'));
+            inputs.forEach((input, idx) => {
+                input.addEventListener('input', function (e) {
+                    if (this.value.length === 1 && idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    }
+                });
+                input.addEventListener('keydown', function (e) {
+                    if (e.key === 'Backspace' && !this.value && idx > 0) {
+                        inputs[idx - 1].focus();
+                    }
+                });
+            });
+            // Paste support
+            inputs[0].form.addEventListener('paste', function (e) {
+                const paste = (e.clipboardData || window.clipboardData).getData('text');
+                if (/^\d{6}$/.test(paste)) {
+                    e.preventDefault();
+                    paste.split('').forEach((char, i) => {
+                        if (inputs[i]) inputs[i].value = char;
+                    });
+                    inputs[5].focus();
+                }
+            });
+            // Countdown timer for resend
+            let timerSpan = document.getElementById('resend-timer');
+            let resendLink = document.getElementById('resend-link');
+            let seconds = 60;
+            function updateTimer() {
+                if (seconds > 0) {
+                    timerSpan.textContent = seconds;
+                    resendLink.style.display = 'none';
+                    seconds--;
+                    setTimeout(updateTimer, 1000);
+                } else {
+                    timerSpan.textContent = '0';
+                    resendLink.style.display = 'inline';
+                }
+            }
+            if (timerSpan) updateTimer();
+        });
+    </script>
+</head>
+<body style="background: #f7f8fa; font-family: 'Inter', Arial, sans-serif; margin: 0;">
+    <style>
+        label { font-size: 13px !important; }
+        input, select { font-size: 13px !important; height: 38px !important; padding: 0 10px !important; }
+        button { font-size: 14px !important; height: 38px !important; }
+        h2 { font-size: 20px !important; }
+        .modal-header, .edit-btn, h3, span, div { font-size: 13px !important; }
+    </style>
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <div style="background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 16px 10px; max-width: 340px; width: 100%; box-sizing: border-box; overflow: hidden;">
+            <div style="margin-bottom: 24px;">
+                <a href="/" style="display: inline-flex; align-items: center; gap: 6px; color: #2d6cdf; text-decoration: none; font-size: 1rem; font-weight: 500;">&larr; Back</a>
+            </div>
+            <div style="margin-bottom: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="color: #222; font-size: 1rem;">Step 2 of 2</span>
+                    <span style="color: #222; font-size: 1rem;">100%</span>
+                </div>
+                <div style="width: 100%; height: 8px; background: #e0e3ea; border-radius: 8px; overflow: hidden;">
+                    <div style="width: 100%; height: 100%; background: #10162f; border-radius: 8px;"></div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-bottom: 24px;">
+                <div style="display: inline-flex; align-items: center; justify-content: center; background: #ffe4e6; border-radius: 50%; padding: 18px; margin-bottom: 12px;">
+                    <span style="font-size: 2.2rem; color: #f87171;">🔥</span>
+                </div>
+                <h2 style="color: #10162f; margin: 0 0 8px 0; font-size: 1.4rem; font-weight: 700;">Verify Your Email</h2>
+                <div style="color: #555; font-size: 1.05rem;">We sent a 6-digit code to</div>
+                <div style="color: #10162f; font-size: 1.08rem; margin-top: 2px; font-weight: 500;" th:text="${email}"></div>
+            </div>
+            <form th:action="@{/2fa/verify}" method="post" autocomplete="off" id="otpForm">
+                <input type="hidden" name="email" th:value="${email}" />
+                <div th:if="${adminOtp}" style="text-align:center; color:#059669; font-weight:600; margin-bottom:12px;">Admin OTP required for login</div>
+                <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; width: 100%; max-width: 240px; margin-left: auto; margin-right: auto;">
+                    <input type="text" name="digit1" maxlength="1" required style="width: 36px; height: 36px; text-align: center; font-size: 1.1rem; border: 2px solid #e0e3ea; border-radius: 8px; background: #f7f8fa; transition: border 0.2s; box-sizing: border-box;" />
+                    <input type="text" name="digit2" maxlength="1" required style="width: 36px; height: 36px; text-align: center; font-size: 1.1rem; border: 2px solid #e0e3ea; border-radius: 8px; background: #f7f8fa; transition: border 0.2s; box-sizing: border-box;" />
+                    <input type="text" name="digit3" maxlength="1" required style="width: 36px; height: 36px; text-align: center; font-size: 1.1rem; border: 2px solid #e0e3ea; border-radius: 8px; background: #f7f8fa; transition: border 0.2s; box-sizing: border-box;" />
+                    <input type="text" name="digit4" maxlength="1" required style="width: 36px; height: 36px; text-align: center; font-size: 1.1rem; border: 2px solid #e0e3ea; border-radius: 8px; background: #f7f8fa; transition: border 0.2s; box-sizing: border-box;" />
+                    <input type="text" name="digit5" maxlength="1" required style="width: 36px; height: 36px; text-align: center; font-size: 1.1rem; border: 2px solid #e0e3ea; border-radius: 8px; background: #f7f8fa; transition: border 0.2s; box-sizing: border-box;" />
+                    <input type="text" name="digit6" maxlength="1" required style="width: 36px; height: 36px; text-align: center; font-size: 1.1rem; border: 2px solid #e0e3ea; border-radius: 8px; background: #f7f8fa; transition: border 0.2s; box-sizing: border-box;" />
+                </div>
+                <div style="text-align: center; margin-bottom: 18px; color: #555;">
+                    Resend code in <span id="resend-timer" style="color: #2d6cdf; font-weight: 500;">60</span>s
+                    <a id="resend-link" th:href="@{/auth/resend-otp(email=${email})}" style="color: #2d6cdf; text-decoration: none; font-weight: 500; margin-left: 8px; display: none;">Resend</a>
+                </div>
+                <button type="submit" id="verifyBtn" style="width: 100%; background: #2d6cdf; color: #fff; border: none; border-radius: 8px; padding: 14px; font-size: 1.1rem; font-weight: 600; cursor: pointer; opacity: 0.95; transition: opacity 0.2s, background 0.2s;">Verify &amp; Continue</button>
+                <div id="processingMsg" style="display:none; text-align:center; color:#2d6cdf; font-weight:600; margin-top:10px;">Processing...</div>
+            </form>
+            <script>
+                document.getElementById('otpForm').addEventListener('submit', function(e) {
+                    var btn = document.getElementById('verifyBtn');
+                    btn.disabled = true;
+                    btn.textContent = 'Please wait...';
+                    document.getElementById('processingMsg').style.display = 'block';
+                });
+                // Show 'Please wait...' on resend OTP
+                var resendLink = document.getElementById('resend-link');
+                if (resendLink) {
+                    resendLink.addEventListener('click', function(e) {
+                        resendLink.textContent = 'Please wait...';
+                        resendLink.style.pointerEvents = 'none';
+                    });
+                }
+            </script>
+            <div style="margin-top: 18px; text-align: center; color: #888; font-size: 0.98rem;">
+                Didn't receive the code?
+            </div>
+        </div>
+    </div>
+</body>
+</html>

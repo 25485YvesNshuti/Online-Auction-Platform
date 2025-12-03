@@ -1,0 +1,64 @@
+<!-- admin/dashboard.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+        <style>
+            .status-badge {
+                display: inline-block;
+                padding: 4px 14px;
+                border-radius: 16px;
+                font-size: 0.98rem;
+                font-weight: 600;
+                letter-spacing: 0.01em;
+                color: #fff;
+            }
+            .status-approved { background: #22c55e !important; }
+            .status-rejected { background: #ef4444 !important; }
+            .status-pending { background: #f59e42 !important; }
+            .status-other { background: #64748b !important; }
+        </style>
+    <title>Admin Seller Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+</head>
+<body style="background: #f7f8fa; font-family: 'Inter', Arial, sans-serif; margin: 0;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+        <div style="background: #fff; border-bottom: 1px solid #e5e7eb; padding: 1.5rem 2rem; margin-bottom: 2rem;">
+            <h1 style="color: #10162f; margin-bottom: 0.5rem;">Seller Applications</h1>
+            <p style="color: #64748b;">Review pending seller applications</p>
+        </div>
+        <table style="width: 100%; background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+            <thead>
+                <tr style="background: #f1f5f9;">
+                    <th style="padding: 1rem; text-align: left; color: #64748b;">Name</th>
+                    <th style="padding: 1rem; text-align: left; color: #64748b;">Type</th>
+                    <th style="padding: 1rem; text-align: left; color: #64748b;">Status</th>
+                    <th style="padding: 1rem; text-align: left; color: #64748b;">Submitted</th>
+                    <th style="padding: 1rem; text-align: left; color: #64748b;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${#lists.isEmpty(sellers)}">
+                    <td colspan="5" style="padding: 2rem; text-align: center; color: #64748b;">No seller applications found.</td>
+                </tr>
+                <tr th:each="seller : ${sellers}">
+                    <td style="padding: 1rem;" th:text="${seller.user != null ? seller.user.fullName : 'N/A'}"></td>
+                    <td style="padding: 1rem;" th:text="${seller.sellerType != null ? seller.sellerType : 'N/A'}"></td>
+                    <td style="padding: 1rem;">
+                                                <span th:text="${seller.applicationStatus != null ? seller.applicationStatus : 'N/A'}"
+                                                            th:classappend="
+                                                                'status-badge ' +
+                                                                (${seller.applicationStatus} == 'APPROVED' ? 'status-approved' :
+                                                                (${seller.applicationStatus} == 'REJECTED' ? 'status-rejected' :
+                                                                (${seller.applicationStatus} == 'PENDING' ? 'status-pending' : 'status-other')))">
+                                                </span>
+                    </td>
+                    <td style="padding: 1rem;" th:text="${seller.submittedDate != null ? seller.submittedDate : 'N/A'}"></td>
+                    <td style="padding: 1rem;">
+                        <a th:href="@{'/admin/sellers/' + ${seller.id}}" style="color: #2563eb; text-decoration: underline; font-weight: 600;">Review</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

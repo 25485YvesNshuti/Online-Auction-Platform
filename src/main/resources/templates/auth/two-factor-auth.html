@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Factor Authentication</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="/css/main.css">
+    <style>
+        body { background: #f9fafb; }
+        .card { background: #fff; border-radius: 1.25rem; box-shadow: 0 2px 16px rgba(0,0,0,0.07); padding: 2.5rem; max-width: 28rem; margin: 3rem auto; }
+        .icon-circle { background: #dbeafe; border-radius: 9999px; padding: 1.2rem; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
+        .icon-circle svg { color: #2563eb; width: 2.5rem; height: 2.5rem; }
+        .tab-list { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .tab { flex: 1; padding: 0.75rem 0; border-radius: 0.5rem; background: #f1f5f9; color: #2563eb; font-weight: 600; text-align: center; cursor: pointer; transition: background 0.2s; }
+        .tab.active { background: #2563eb; color: #fff; }
+        .otp-inputs { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem; }
+        .otp-input { width: 2.5rem; height: 3rem; text-align: center; border: 2px solid #cbd5e1; border-radius: 0.5rem; font-size: 1.5rem; transition: border 0.2s; }
+        .otp-input:focus { border-color: #2563eb; outline: none; }
+        .btn { display: inline-block; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; text-align: center; transition: background 0.2s; border: none; }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-ghost { background: none; color: #2563eb; border: none; }
+        .btn-ghost:hover { text-decoration: underline; }
+        .text-center { text-align: center; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        @media (max-width: 640px) { .card { padding: 1rem; } }
+    </style>
+    <script>
+        function switchTab(tab) {
+            document.getElementById('tab-email').classList.remove('active');
+            document.getElementById('tab-app').classList.remove('active');
+            document.getElementById('content-email').style.display = 'none';
+            document.getElementById('content-app').style.display = 'none';
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('content-' + tab).style.display = 'block';
+        }
+        function setupOtpInputs(prefix) {
+            const inputs = document.querySelectorAll('.' + prefix + '-otp-input');
+            inputs.forEach((input, idx) => {
+                input.addEventListener('input', function() {
+                    if (this.value.length > 1) this.value = this.value[0];
+                    if (/\d/.test(this.value) && idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    }
+                });
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !this.value && idx > 0) {
+                        inputs[idx - 1].focus();
+                    }
+                });
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            switchTab('email');
+            setupOtpInputs('email');
+            setupOtpInputs('app');
+        });
+    </script>
+</head>
+<body>
+    <div class="card">
+        <div class="text-center mb-6">
+            <div class="icon-circle">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"/></svg>
+            </div>
+            <h1 class="mb-2">Two-Factor Authentication</h1>
+            <p class="mb-4">Verify your identity to continue</p>
+        </div>
+        <div class="tab-list">
+            <div id="tab-email" class="tab active" onclick="switchTab('email')">
+                <svg style="vertical-align: middle; margin-right: 6px;" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg>
+                Email OTP
+            </div>
+            <div id="tab-app" class="tab" onclick="switchTab('app')">
+                <svg style="vertical-align: middle; margin-right: 6px;" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                Authenticator
+            </div>
+        </div>
+        <form th:action="@{/2fa/verify}" method="post">
+            <div id="content-email">
+                <div class="text-center mb-4">
+                    <p class="mb-2">Enter the code sent to</p>
+                    <p th:text="${email}" class="font-semibold">your.email@example.com</p>
+                </div>
+                <div class="otp-inputs mb-4">
+                    <input class="email-otp-input otp-input" name="digit1" maxlength="1" type="text" inputmode="numeric" required />
+                    <input class="email-otp-input otp-input" name="digit2" maxlength="1" type="text" inputmode="numeric" required />
+                    <input class="email-otp-input otp-input" name="digit3" maxlength="1" type="text" inputmode="numeric" required />
+                    <input class="email-otp-input otp-input" name="digit4" maxlength="1" type="text" inputmode="numeric" required />
+                    <input class="email-otp-input otp-input" name="digit5" maxlength="1" type="text" inputmode="numeric" required />
+                    <input class="email-otp-input otp-input" name="digit6" maxlength="1" type="text" inputmode="numeric" required />
+                </div>
+                <div class="text-center mb-4">
+                    <button type="button" class="btn btn-ghost">Resend Code</button>
+                </div>
+                <button type="submit" class="btn btn-primary w-full">Verify & Continue</button>
+                <div class="mt-4 text-center">
+                    <a href="#" class="text-gray-600 hover:text-gray-900">Didn't receive the code?</a>
+                </div>
+            </div>
+            <div id="content-app" style="display:none;">
+                <div class="text-center mb-4">
+                    <p>Enter the 6-digit code from your authenticator app</p>
+                </div>
+                <div class="otp-inputs mb-4">
+                    <input class="app-otp-input otp-input" name="appDigit1" maxlength="1" type="text" inputmode="numeric" required />
+                    <input class="app-otp-input otp-input" name="appDigit2" maxlength="1" type="text" inputmode="numeric" required />
+                    <input class="app-otp-input otp-input" name="appDigit3" maxlength="1" type="text" inputmode="numeric" required />
+                    <input class="app-otp-input otp-input" name="appDigit4" maxlength="1" type="text" inputmode="numeric" required />
+                    <input class="app-otp-input otp-input" name="appDigit5" maxlength="1" type="text" inputmode="numeric" required />
+                    <input class="app-otp-input otp-input" name="appDigit6" maxlength="1" type="text" inputmode="numeric" required />
+                </div>
+                <button type="submit" class="btn btn-primary w-full">Verify & Continue</button>
+                <div class="mt-4 text-center">
+                    <a href="#" class="text-gray-600 hover:text-gray-900">Lost access to app?</a>
+                </div>
+            </div>
+        </form>
+        <div class="mt-6 text-center">
+            <a href="#" class="text-blue-600 hover:underline">Use backup method</a>
+        </div>
+    </div>
+</body>
+</html>

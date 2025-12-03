@@ -1,0 +1,37 @@
+body { background: #f7f8fa; font-family: 'Inter', Arial, sans-serif; margin: 0; }
+.form-container { max-width: 420px; margin: 48px auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 36px 32px; }
+.back-link { color: #2d6cdf; text-decoration: none; font-size: 1rem; display: block; margin-bottom: 18px; text-align: left; font-weight: 500; }
+.progress-bar { width: 100%; height: 8px; background: #e0e3ea; border-radius: 8px; margin-bottom: 18px; overflow: hidden; }
+.progress-bar-inner { width: 50%; height: 100%; background: #10162f; border-radius: 8px; transition: width 0.3s; }
+.step-label { font-size: 1rem; color: #222; margin-bottom: 6px; display: flex; justify-content: space-between; }
+.form-title { font-size: 1.5rem; font-weight: 700; color: #10162f; margin-bottom: 8px; }
+.form-desc { color: #555; font-size: 1.05rem; margin-bottom: 24px; }
+input[type="text"], input[type="email"], input[type="password"] { width: 100%; padding: 12px; margin-bottom: 18px; border: 1px solid #e0e3ea; border-radius: 8px; font-size: 1rem; background: #f7f8fa; }
+.form-group.terms {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 18px;
+}
+.form-group.terms label {
+	font-size: 1rem;
+	color: #555;
+	opacity: 0.85;
+	margin: 0;
+}
+.form-group.terms a {
+	color: #2d6cdf;
+	text-decoration: none;
+	font-weight: 500;
+}
+input[type="checkbox"] {
+	accent-color: #2d6cdf;
+	width: 18px;
+	height: 18px;
+	margin-right: 8px;
+	opacity: 0.85;
+}
+.btn-signup { width: 100%; background: #2d6cdf; color: #fff; border: none; border-radius: 8px; padding: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-bottom: 12px; opacity: 0.92; transition: opacity 0.2s, background 0.2s; }
+.btn-signup:hover { background: #1a4bb8; opacity: 1; }
+.login-link { display: block; text-align: center; color: #2d6cdf; text-decoration: none; font-size: 0.98rem; }
+.login-link:hover { text-decoration: underline; }

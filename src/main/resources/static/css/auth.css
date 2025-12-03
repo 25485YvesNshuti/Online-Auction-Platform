@@ -1,0 +1,10 @@
+body { background: #f7f8fa; font-family: 'Inter', Arial, sans-serif; }
+.auth-container { max-width: 400px; margin: 60px auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 32px; }
+h2 { color: #1a2233; font-size: 2rem; margin-bottom: 24px; }
+input[type="text"], input[type="email"], input[type="password"] { width: 100%; padding: 12px; margin-bottom: 18px; border: 1px solid #e0e3ea; border-radius: 8px; font-size: 1rem; }
+button { width: 100%; background: #2d6cdf; color: #fff; border: none; border-radius: 8px; padding: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+button:hover { background: #1a4bb8; }
+a { display: block; margin-top: 12px; color: #2d6cdf; text-align: center; text-decoration: none; font-size: 0.98rem; }
+a:hover { text-decoration: underline; }
+.error { color: #e74c3c; margin-bottom: 12px; }
+.success { color: #27ae60; margin-bottom: 12px; }

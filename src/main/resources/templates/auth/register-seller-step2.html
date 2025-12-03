@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register Seller - Step 2</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}" />
+</head>
+<body style="background: #f7f8fa; font-family: 'Inter', Arial, sans-serif; margin: 0;">
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <div style="background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 40px 32px; max-width: 520px; width: 100%;">
+            <div style="margin-bottom: 24px;">
+                <a th:href="@{/register-seller-step1}" style="display: inline-flex; align-items: center; gap: 6px; color: #2d6cdf; text-decoration: none; font-size: 1rem; font-weight: 500;">&larr; Back</a>
+            </div>
+            <div style="text-align: center; margin-bottom: 24px;">
+                <h2 style="color: #10162f; margin: 0 0 8px 0; font-size: 1.4rem; font-weight: 700;">Seller Registration - Step 2</h2>
+                <div style="color: #555; font-size: 1.05rem;">Financial & Legal Information</div>
+            </div>
+            <form th:action="@{/register-seller-step2}" method="post" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 18px;">
+                                                <div th:if="${error}" style="color: #e11d48; background: #fee2e2; border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; font-weight: 600;">[[${error}]]</div>
+                                <input type="hidden" name="userId" th:value="${userId}" />
+                <div>
+                    <label for="bankAccountNumber" style="display: block; color: #222; font-size: 1rem; margin-bottom: 6px;">Bank Account Number</label>
+                    <input type="text" id="bankAccountNumber" name="bankAccountNumber" placeholder="Enter account number" required style="width: 100%; padding: 6px 8px; border: 1px solid #e0e3ea; border-radius: 8px; font-size: 1rem; background: #f7f8fa; height: 30px;" />
+                </div>
+                <div>
+                    <label for="bankName" style="display: block; color: #222; font-size: 1rem; margin-bottom: 6px;">Bank Name</label>
+                    <select id="bankName" name="bankName" required style="width: 100%; padding: 6px 8px; border: 1px solid #e0e3ea; border-radius: 8px; font-size: 1rem; background: #f7f8fa; height: 30px;">
+                        <option value="" disabled selected>Select your bank</option>
+                        <option value="bank-of-kigali">Bank of Kigali</option>
+                        <option value="equity-bank">Equity Bank Rwanda</option>
+                        <option value="i&m-bank">I&M Bank Rwanda</option>
+                        <option value="access-bank">Access Bank Rwanda</option>
+                        <option value="cogebanque">Cogebanque</option>
+                        <option value="gt-bank">GT Bank Rwanda</option>
+                        <option value="ncba-bank">NCBA Bank Rwanda</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="proofOfAccountOwnership" style="display: block; color: #222; font-size: 1rem; margin-bottom: 6px;">Proof of Account Ownership <span style="color:#e11d48;">(PDF only, max 5MB)</span></label>
+                    <input type="file" id="proofOfAccountOwnership" name="proofOfAccountOwnership" accept=".pdf" required style="width: 100%; padding: 4px 8px; border: 1px solid #e0e3ea; border-radius: 8px; background: #f7f8fa; height: 30px;" />
+                </div>
+                <div>
+                    <label for="mobileMoneyNumber" style="display: block; color: #222; font-size: 1rem; margin-bottom: 6px;">Mobile Money Number (Optional)</label>
+                    <input type="tel" id="mobileMoneyNumber" name="mobileMoneyNumber" placeholder="+250 XXX XXX XXX" style="width: 100%; padding: 6px 8px; border: 1px solid #e0e3ea; border-radius: 8px; font-size: 1rem; background: #f7f8fa; height: 30px;" />
+                </div>
+                <div>
+                    <label for="authorizationLetter" style="display: block; color: #222; font-size: 1rem; margin-bottom: 6px;">Authorization Letter <span style="color:#e11d48;">(PDF only, max 5MB)</span></label>
+                    <input type="file" id="authorizationLetter" name="authorizationLetter" accept=".pdf" required style="width: 100%; padding: 4px 8px; border: 1px solid #e0e3ea; border-radius: 8px; background: #f7f8fa; height: 30px;" />
+                </div>
+                <div>
+                    <label for="noDisputeDeclaration" style="display: block; color: #222; font-size: 1rem; margin-bottom: 6px;">No-Dispute Declaration <span style="color:#e11d48;">(PDF only, max 5MB)</span></label>
+                    <input type="file" id="noDisputeDeclaration" name="noDisputeDeclaration" accept=".pdf" required style="width: 100%; padding: 4px 8px; border: 1px solid #e0e3ea; border-radius: 8px; background: #f7f8fa; height: 30px;" />
+                </div>
+                <div>
+                    <label for="courtSaleAuthorization" style="display: block; color: #222; font-size: 1rem; margin-bottom: 6px;">Court Sale Authorization (If Applicable) <span style="color:#e11d48;">(PDF only, max 5MB)</span></label>
+                    <input type="file" id="courtSaleAuthorization" name="courtSaleAuthorization" accept=".pdf" style="width: 100%; padding: 4px 8px; border: 1px solid #e0e3ea; border-radius: 8px; background: #f7f8fa; height: 30px;" />
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 18px;">
+                    <button type="button" onclick="window.location.href='/register-seller-step1'" style="flex:1; background: #fff; color: #2d6cdf; border: 1px solid #2d6cdf; border-radius: 8px; padding: 6px 0; font-size: 1.1rem; font-weight: 600; cursor: pointer; height: 32px;">Back</button>
+                    <button type="submit" id="sellerStep2Btn" style="flex:1; background: #2d6cdf; color: #fff; border: none; border-radius: 8px; padding: 6px 0; font-size: 1.1rem; font-weight: 600; cursor: pointer; height: 32px;">Next</button>
+                </div>
+            </form>
+        <script>
+        // Show 'Please wait...' on submit
+        document.querySelector('form[th\\:action="@{/register-seller-step2}"]').addEventListener('submit', function(e) {
+            var btn = document.getElementById('sellerStep2Btn');
+            btn.disabled = true;
+            btn.textContent = 'Please wait...';
+        });
+        </script>
+    </div>
+</body>
+</html>

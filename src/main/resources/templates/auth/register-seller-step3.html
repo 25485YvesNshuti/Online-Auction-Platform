@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register Seller - Step 3</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}" />
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.25);
+            align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: #fff; border-radius: 14px; padding: 32px 28px; max-width: 420px; width: 100%; box-shadow: 0 8px 32px rgba(37,99,235,0.09);
+        }
+        .modal-header { font-size: 1.2rem; font-weight: 700; color: #10162f; margin-bottom: 18px; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 18px; }
+        .modal-actions button { flex: 1; padding: 6px 0; border-radius: 8px; font-size: 1.05rem; font-weight: 600; cursor: pointer; height: 32px; }
+        .modal-actions .cancel { background: #fff; color: #2d6cdf; border: 1px solid #2d6cdf; }
+        .modal-actions .save { background: #2d6cdf; color: #fff; border: none; }
+        .edit-btn { color: #2d6cdf; text-decoration: underline; font-size: 0.98rem; cursor: pointer; background: none; border: none; padding: 0; }
+    </style>
+</head>
+<body style="background: #f7f8fa; font-family: 'Inter', Arial, sans-serif; margin: 0;">
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <div style="background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 40px 32px; max-width: 520px; width: 100%;">
+            <div style="margin-bottom: 24px;">
+                <a th:href="@{/register-seller-step2}" style="display: inline-flex; align-items: center; gap: 6px; color: #2d6cdf; text-decoration: none; font-size: 1rem; font-weight: 500;">&larr; Back</a>
+            </div>
+            <div style="text-align: center; margin-bottom: 24px;">
+                <h2 style="color: #10162f; margin: 0 0 8px 0; font-size: 1.4rem; font-weight: 700;">Review &amp; Submit Seller Application</h2>
+                <div style="color: #555; font-size: 1.05rem;">Step 3 of 3</div>
+            </div>
+            <form th:action="@{/register-seller-step3}" method="post" style="display: flex; flex-direction: column; gap: 18px;">
+                            <!-- Hidden fields to safely pass data to JS -->
+                            <input type="hidden" id="seller-businessName" th:value="${seller != null and seller.businessName != null} ? ${seller.businessName} : ''" />
+                            <input type="hidden" id="seller-sellerType" th:value="${seller != null and seller.sellerType != null} ? ${seller.sellerType} : ''" />
+                            <input type="hidden" id="seller-nationalIdOrPassport" th:value="${seller != null and seller.nationalIdOrPassport != null} ? ${seller.nationalIdOrPassport} : ''" />
+                            <input type="hidden" id="seller-email" th:value="${seller != null and seller.user != null and seller.user.email != null} ? ${seller.user.email} : ''" />
+                            <input type="hidden" id="seller-phone" th:value="${seller != null and seller.user != null and seller.user.phone != null} ? ${seller.user.phone} : ''" />
+                            <input type="hidden" id="seller-physicalAddress" th:value="${seller != null and seller.physicalAddress != null} ? ${seller.physicalAddress} : ''" />
+                            <input type="hidden" id="seller-secondaryContact" th:value="${seller != null and seller.secondaryContact != null} ? ${seller.secondaryContact} : ''" />
+                            <input type="hidden" id="seller-bankAccountNumber" th:value="${seller != null and seller.bankAccountNumber != null} ? ${seller.bankAccountNumber} : ''" />
+                            <input type="hidden" id="seller-bankName" th:value="${seller != null and seller.bankName != null} ? ${seller.bankName} : ''" />
+                            <input type="hidden" id="seller-mobileMoneyNumber" th:value="${seller != null and seller.mobileMoneyNumber != null} ? ${seller.mobileMoneyNumber} : ''" />
+                            <input type="hidden" id="seller-authorizationLetterUrl" th:value="${seller != null and seller.authorizationLetterUrl != null} ? ${seller.authorizationLetterUrl} : ''" />
+                            <input type="hidden" id="seller-noDisputeDeclarationUrl" th:value="${seller != null and seller.noDisputeDeclarationUrl != null} ? ${seller.noDisputeDeclarationUrl} : ''" />
+                            <input type="hidden" id="seller-courtSaleAuthorizationUrl" th:value="${seller != null and seller.courtSaleAuthorizationUrl != null} ? ${seller.courtSaleAuthorizationUrl} : ''" />
+                <input type="hidden" name="userId" th:value="${userId}" />
+                <div th:if="${error}" style="color: #e74c3c; font-size: 1rem; margin-bottom: 10px; text-align: center;">
+                    <span th:text="${error}"></span>
+                </div>
+                <div th:if="${success}">
+                    <script th:inline="javascript">
+                        /*<![CDATA[*/
+                        window.location.href = /*[[@{/seller-submission-confirmation}]]*/ '/seller-submission-confirmation';
+                        /*]]>*/
+                    </script>
+                </div>
+                <div th:unless="${success}">
+                    <div style="margin-bottom: 18px;">
+                        <h3 style="color: #222; font-size: 1.1rem; margin-bottom: 8px;">Identity Information</h3>
+                        <div style="color: #555; font-size: 1rem;">Please review your identity details. <button type="button" class="edit-btn" onclick="openModal('identity')">Edit</button></div>
+                        <div id="identity-summary" style="font-size:0.98rem; color:#333; margin-top:6px;"><!-- Render summary here with Thymeleaf --></div>
+                    </div>
+                    <div style="margin-bottom: 18px;">
+                        <h3 style="color: #222; font-size: 1.1rem; margin-bottom: 8px;">Contact Information</h3>
+                        <div style="color: #555; font-size: 1rem;">Please review your contact details. <button type="button" class="edit-btn" onclick="openModal('contact')">Edit</button></div>
+                        <div id="contact-summary" style="font-size:0.98rem; color:#333; margin-top:6px;"></div>
+                    </div>
+                    <div style="margin-bottom: 18px;">
+                        <h3 style="color: #222; font-size: 1.1rem; margin-bottom: 8px;">Financial Information</h3>
+                        <div style="color: #555; font-size: 1rem;">Please review your financial details. <button type="button" class="edit-btn" onclick="openModal('financial')">Edit</button></div>
+                        <div id="financial-summary" style="font-size:0.98rem; color:#333; margin-top:6px;"></div>
+                    </div>
+                    <div style="margin-bottom: 18px;">
+                        <h3 style="color: #222; font-size: 1.1rem; margin-bottom: 8px;">Legal Documents</h3>
+                        <div style="color: #555; font-size: 1rem;">Please review your legal compliance documents. <button type="button" class="edit-btn" onclick="openModal('legal')">Edit</button></div>
+                        <div id="legal-summary" style="font-size:0.98rem; color:#333; margin-top:6px;"></div>
+                    </div>
+                                <!-- Modals for editing sections -->
+                                <div id="modal-identity" class="modal"><div class="modal-content">
+                                    <div class="modal-header">Edit Identity Information</div>
+                                    <div style="display:flex; flex-direction:column; gap:12px;">
+                                        <input type="text" id="edit-businessName" placeholder="Full Name or Business Name" style="padding:10px; border-radius:6px; border:1px solid #e0e3ea;" />
+                                        <input type="text" id="edit-sellerType" placeholder="Seller Type" style="padding:10px; border-radius:6px; border:1px solid #e0e3ea;" />
+                                        <label style="font-size:0.97rem; color:#444;">National ID / Passport (PDF only):
+                                            <input type="file" id="edit-nationalIdOrPassport-file" accept="application/pdf" style="margin-top:6px;" />
+                                        </label>
+                                        <span id="nationalIdOrPassport-file-name" style="font-size:0.93rem; color:#2d6cdf;"></span>
+                                    </div>
+                                    <div class="modal-actions">
+                                        <button type="button" class="cancel" onclick="closeModal('identity')">Cancel</button>
+                                        <button type="button" class="save" onclick="saveModal('identity')">Save</button>
+                                    </div>
+                                </div></div>
+                                <div id="modal-contact" class="modal"><div class="modal-content">
+                                    <div class="modal-header">Edit Contact Information</div>
+                                    <div style="display:flex; flex-direction:column; gap:12px;">
+                                        <input type="email" id="edit-email" placeholder="Email Address" style="padding:10px; border-radius:6px; border:1px solid #e0e3ea;" />
+                                        <input type="tel" id="edit-phone" placeholder="Phone Number" style="padding:10px; border-radius:6px; border:1px solid #e0e3ea;" />
+                                        <input type="text" id="edit-physicalAddress" placeholder="Physical Address" style="padding:10px; border-radius:6px; border:1px solid #e0e3ea;" />
+                                        <input type="tel" id="edit-secondaryContact" placeholder="Secondary Contact (Optional)" style="padding:10px; border-radius:6px; border:1px solid #e0e3ea;" />
+                                    </div>
+                                    <div class="modal-actions">
+                                        <button type="button" class="cancel" onclick="closeModal('contact')">Cancel</button>
+                                        <button type="button" class="save" onclick="saveModal('contact')">Save</button>
+                                    </div>
+                                </div></div>
+                                <div id="modal-financial" class="modal"><div class="modal-content">
+                                    <div class="modal-header">Edit Financial Information</div>
+                                    <div style="display:flex; flex-direction:column; gap:12px;">
+                                        <input type="text" id="edit-bankAccountNumber" placeholder="Bank Account Number" style="padding:10px; border-radius:6px; border:1px solid #e0e3ea;" />
+                                        <input type="text" id="edit-bankName" placeholder="Bank Name" style="padding:10px; border-radius:6px; border:1px solid #e0e3ea;" />
+                                        <input type="tel" id="edit-mobileMoneyNumber" placeholder="Mobile Money Number (Optional)" style="padding:10px; border-radius:6px; border:1px solid #e0e3ea;" />
+                                    </div>
+                                    <div class="modal-actions">
+                                        <button type="button" class="cancel" onclick="closeModal('financial')">Cancel</button>
+                                        <button type="button" class="save" onclick="saveModal('financial')">Save</button>
+                                    </div>
+                                </div></div>
+                                <div id="modal-legal" class="modal"><div class="modal-content">
+                                    <div class="modal-header">Edit Legal Documents</div>
+                                    <div style="display:flex; flex-direction:column; gap:12px;">
+                                        <input type="text" id="edit-authorizationLetter" placeholder="Authorization Letter (file name or status)" style="padding:10px; border-radius:6px; border:1px solid #e0e3ea;" />
+                                        <input type="text" id="edit-noDisputeDeclaration" placeholder="No-Dispute Declaration (file name or status)" style="padding:10px; border-radius:6px; border:1px solid #e0e3ea;" />
+                                        <input type="text" id="edit-courtSaleAuthorization" placeholder="Court Sale Authorization (file name or status)" style="padding:10px; border-radius:6px; border:1px solid #e0e3ea;" />
+                                    </div>
+                                    <div class="modal-actions">
+                                        <button type="button" class="cancel" onclick="closeModal('legal')">Cancel</button>
+                                        <button type="button" class="save" onclick="saveModal('legal')">Save</button>
+                                    </div>
+                                </div></div>
+                        <script>
+                            // Example data, replace with Thymeleaf variables for real data
+                            let sellerData = {
+                                identity: {
+                                    businessName: document.getElementById('seller-businessName').value,
+                                    sellerType: document.getElementById('seller-sellerType').value,
+                                    nationalIdOrPassport: document.getElementById('seller-nationalIdOrPassport').value
+                                },
+                                contact: {
+                                    email: document.getElementById('seller-email').value,
+                                    phone: document.getElementById('seller-phone').value,
+                                    physicalAddress: document.getElementById('seller-physicalAddress').value,
+                                    secondaryContact: document.getElementById('seller-secondaryContact').value
+                                },
+                                financial: {
+                                    bankAccountNumber: document.getElementById('seller-bankAccountNumber').value,
+                                    bankName: document.getElementById('seller-bankName').value,
+                                    mobileMoneyNumber: document.getElementById('seller-mobileMoneyNumber').value
+                                },
+                                legal: {
+                                    authorizationLetter: document.getElementById('seller-authorizationLetterUrl').value,
+                                    noDisputeDeclaration: document.getElementById('seller-noDisputeDeclarationUrl').value,
+                                    courtSaleAuthorization: document.getElementById('seller-courtSaleAuthorizationUrl').value
+                                }
+                            };
+
+                            function renderSummaries() {
+                                document.getElementById('identity-summary').innerHTML =
+                                    `<b>Name:</b> ${sellerData.identity.businessName}<br>` +
+                                    `<b>Type:</b> ${sellerData.identity.sellerType}<br>` +
+                                    `<b>ID/Passport:</b> ${sellerData.identity.nationalIdOrPassport}`;
+                                document.getElementById('contact-summary').innerHTML =
+                                    `<b>Email:</b> ${sellerData.contact.email}<br>` +
+                                    `<b>Phone:</b> ${sellerData.contact.phone}<br>` +
+                                    `<b>Address:</b> ${sellerData.contact.physicalAddress}<br>` +
+                                    `<b>Secondary Contact:</b> ${sellerData.contact.secondaryContact}`;
+                                document.getElementById('financial-summary').innerHTML =
+                                    `<b>Account #:</b> ${sellerData.financial.bankAccountNumber}<br>` +
+                                    `<b>Bank:</b> ${sellerData.financial.bankName}<br>` +
+                                    `<b>Mobile Money:</b> ${sellerData.financial.mobileMoneyNumber}`;
+                                document.getElementById('legal-summary').innerHTML =
+                                    `<b>Authorization Letter:</b> ${sellerData.legal.authorizationLetter}<br>` +
+                                    `<b>No-Dispute Declaration:</b> ${sellerData.legal.noDisputeDeclaration}<br>` +
+                                    `<b>Court Sale Authorization:</b> ${sellerData.legal.courtSaleAuthorization}`;
+                            }
+
+                            function openModal(section) {
+                                // Fill modal fields with current data
+                                if (section === 'identity') {
+                                    document.getElementById('edit-businessName').value = sellerData.identity.businessName;
+                                    document.getElementById('edit-sellerType').value = sellerData.identity.sellerType;
+                                    // Show file name if already uploaded
+                                    document.getElementById('edit-nationalIdOrPassport-file').value = '';
+                                    document.getElementById('nationalIdOrPassport-file-name').textContent = sellerData.identity.nationalIdOrPassport ? sellerData.identity.nationalIdOrPassport : '';
+                                } else if (section === 'contact') {
+                                    document.getElementById('edit-email').value = sellerData.contact.email;
+                                    document.getElementById('edit-phone').value = sellerData.contact.phone;
+                                    document.getElementById('edit-physicalAddress').value = sellerData.contact.physicalAddress;
+                                    document.getElementById('edit-secondaryContact').value = sellerData.contact.secondaryContact;
+                                } else if (section === 'financial') {
+                                    document.getElementById('edit-bankAccountNumber').value = sellerData.financial.bankAccountNumber;
+                                    document.getElementById('edit-bankName').value = sellerData.financial.bankName;
+                                    document.getElementById('edit-mobileMoneyNumber').value = sellerData.financial.mobileMoneyNumber;
+                                } else if (section === 'legal') {
+                                    document.getElementById('edit-authorizationLetter').value = sellerData.legal.authorizationLetter;
+                                    document.getElementById('edit-noDisputeDeclaration').value = sellerData.legal.noDisputeDeclaration;
+                                    document.getElementById('edit-courtSaleAuthorization').value = sellerData.legal.courtSaleAuthorization;
+                                }
+                                document.getElementById('modal-' + section).style.display = 'flex';
+                            }
+                            function closeModal(section) {
+                                document.getElementById('modal-' + section).style.display = 'none';
+                            }
+                            function saveModal(section) {
+                                if (section === 'identity') {
+                                    sellerData.identity.businessName = document.getElementById('edit-businessName').value;
+                                    sellerData.identity.sellerType = document.getElementById('edit-sellerType').value;
+                                    const fileInput = document.getElementById('edit-nationalIdOrPassport-file');
+                                    if (fileInput.files && fileInput.files.length > 0) {
+                                        const file = fileInput.files[0];
+                                        if (file.type === 'application/pdf') {
+                                            sellerData.identity.nationalIdOrPassport = file.name;
+                                            document.getElementById('nationalIdOrPassport-file-name').textContent = file.name;
+                                            // TODO: handle file upload to backend on submit
+                                        } else {
+                                            alert('Please select a PDF file.');
+                                            return;
+                                        }
+                                    }
+                                } else if (section === 'contact') {
+                                    sellerData.contact.email = document.getElementById('edit-email').value;
+                                    sellerData.contact.phone = document.getElementById('edit-phone').value;
+                                    sellerData.contact.physicalAddress = document.getElementById('edit-physicalAddress').value;
+                                    sellerData.contact.secondaryContact = document.getElementById('edit-secondaryContact').value;
+                                } else if (section === 'financial') {
+                                    sellerData.financial.bankAccountNumber = document.getElementById('edit-bankAccountNumber').value;
+                                    sellerData.financial.bankName = document.getElementById('edit-bankName').value;
+                                    sellerData.financial.mobileMoneyNumber = document.getElementById('edit-mobileMoneyNumber').value;
+                                } else if (section === 'legal') {
+                                    sellerData.legal.authorizationLetter = document.getElementById('edit-authorizationLetter').value;
+                                    sellerData.legal.noDisputeDeclaration = document.getElementById('edit-noDisputeDeclaration').value;
+                                    sellerData.legal.courtSaleAuthorization = document.getElementById('edit-courtSaleAuthorization').value;
+                                }
+                                closeModal(section);
+                                renderSummaries();
+                            }
+                            window.onload = renderSummaries;
+                        </script>
+                    <div style="margin-bottom: 18px;">
+                        <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 1rem; color: #222;">
+                            <input type="checkbox" name="confirm" required style="margin-top: 3px;" />
+                            <span>I confirm that all provided information is accurate and I agree to the Seller Terms &amp; Conditions.</span>
+                        </label>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 18px;">
+                        <button type="button" onclick="window.location.href='/register-seller-step2'" style="flex:1; background: #fff; color: #2d6cdf; border: 1px solid #2d6cdf; border-radius: 8px; padding: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Back</button>
+                        <button type="submit" id="sellerStep3Btn" style="flex:1; background: #2d6cdf; color: #fff; border: none; border-radius: 8px; padding: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer;">Submit for Approval</button>
+                    </div>
+                </div>
+            <script>
+            // Show 'Please wait...' on submit
+            document.querySelector('form[th\\:action="@{/register-seller-step3}"]').addEventListener('submit', function(e) {
+                var btn = document.getElementById('sellerStep3Btn');
+                btn.disabled = true;
+                btn.textContent = 'Please wait...';
+            });
+            </script>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

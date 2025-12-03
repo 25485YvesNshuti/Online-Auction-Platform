@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Up Two-Factor Authentication</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="/css/main.css">
+    <style>
+        body { background: #f9fafb; }
+        .card { background: #fff; border-radius: 1.25rem; box-shadow: 0 2px 16px rgba(0,0,0,0.07); padding: 2.5rem; max-width: 32rem; margin: 3rem auto; }
+        .icon-circle { background: #dbeafe; border-radius: 9999px; padding: 1.2rem; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
+        .icon-circle svg { color: #2563eb; width: 2.5rem; height: 2.5rem; }
+        .stepper { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2rem; }
+        .step { width: 2.2rem; height: 2.2rem; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 1.1rem; background: #e5e7eb; color: #64748b; }
+        .step.active, .step.completed { background: #2563eb; color: #fff; }
+        .step.completed svg { color: #22c55e; }
+        .step-line { width: 2.5rem; height: 0.25rem; background: #e5e7eb; align-self: center; }
+        .step-line.active { background: #2563eb; }
+        .btn { display: inline-block; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; text-align: center; transition: background 0.2s; border: none; }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-outline { background: #fff; color: #2563eb; border: 2px solid #2563eb; }
+        .btn-outline:hover { background: #f1f5f9; }
+        .btn-ghost { background: none; color: #2563eb; border: none; }
+        .btn-ghost:hover { text-decoration: underline; }
+        .text-center { text-align: center; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .input-code { width: 8rem; text-align: center; font-size: 1.5rem; padding: 0.75rem; border: 2px solid #cbd5e1; border-radius: 0.5rem; }
+        .input-code:focus { border-color: #2563eb; outline: none; }
+        .backup-codes { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1rem; }
+        .backup-code { background: #fff; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 0.5rem 1rem; font-family: monospace; margin: 0.25rem 0; display: inline-block; }
+        .alert { background: #fef3c7; border: 1px solid #fde68a; border-radius: 0.75rem; padding: 1rem; color: #92400e; display: flex; gap: 0.75rem; align-items: flex-start; }
+        @media (max-width: 640px) { .card { padding: 1rem; } }
+    </style>
+    <script>
+        function showStep(step) {
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('step-' + i).style.display = (i === step) ? 'block' : 'none';
+                document.getElementById('stepper-' + i).classList.remove('active', 'completed');
+                if (i < step) document.getElementById('stepper-' + i).classList.add('completed');
+                else if (i === step) document.getElementById('stepper-' + i).classList.add('active');
+            }
+            for (let i = 1; i < 4; i++) {
+                document.getElementById('stepper-line-' + i).classList.toggle('active', i < step);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() { showStep(1); });
+    </script>
+</head>
+<body>
+    <div class="card">
+        <div class="text-center mb-8">
+            <div class="icon-circle">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"/></svg>
+            </div>
+            <h1 class="mb-2">Set Up Two-Factor Authentication</h1>
+            <p class="mb-4">Add an extra layer of security to your account</p>
+        </div>
+        <div class="stepper mb-8">
+            <div id="stepper-1" class="step">1</div>
+            <div id="stepper-line-1" class="step-line"></div>
+            <div id="stepper-2" class="step">2</div>
+            <div id="stepper-line-2" class="step-line"></div>
+            <div id="stepper-3" class="step">3</div>
+            <div id="stepper-line-3" class="step-line"></div>
+            <div id="stepper-4" class="step">4</div>
+        </div>
+        <!-- Step 1: Download App -->
+        <div id="step-1">
+            <div class="mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="icon-circle" style="padding:0.7rem; background:#dbeafe;"><svg width="20" height="20" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+                    <h2 class="text-gray-900">Download Authenticator App</h2>
+                </div>
+                <p class="mb-4">Install one of the following authenticator apps on your mobile device:</p>
+                <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem;">
+                    <div class="backup-code">Google Authenticator<br><span style="color:#64748b; font-size:0.95em;">iOS & Android</span></div>
+                    <div class="backup-code">Microsoft Authenticator<br><span style="color:#64748b; font-size:0.95em;">iOS & Android</span></div>
+                    <div class="backup-code">Authy<br><span style="color:#64748b; font-size:0.95em;">iOS & Android</span></div>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <button class="btn btn-outline flex-1" onclick="window.location.href='/login'">Do This Later</button>
+                <button class="btn btn-primary flex-1" onclick="showStep(2)">I've Downloaded It</button>
+            </div>
+        </div>
+        <!-- Step 2: Scan QR Code -->
+        <div id="step-2" style="display:none;">
+            <div class="mb-6">
+                <h2 class="mb-4">Scan QR Code</h2>
+                <p class="mb-6">Open your authenticator app and scan this QR code:</p>
+                <div class="bg-white border-2 border-gray-300 rounded-lg p-8 flex justify-center mb-6">
+                    <div class="icon-circle" style="background:linear-gradient(135deg,#1e293b,#64748b);padding:2.5rem;">
+                        <svg width="36" height="36" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h.01M17 7h.01M7 17h.01M17 17h.01"/></svg>
+                        <div style="color:#fff; font-size:1.1rem; margin-top:0.5rem;">QR Code</div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <label>Can't scan? Enter this key manually:</label>
+                        <button type="button" class="btn btn-ghost" onclick="navigator.clipboard.writeText('JBSWY3DPEHPK3PXP');this.innerText='Copied!';setTimeout(()=>this.innerText='Copy',2000)">Copy</button>
+                    </div>
+                    <div class="bg-white border border-gray-300 rounded px-3 py-2 font-mono text-center">JBSWY3DPEHPK3PXP</div>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <button class="btn btn-outline flex-1" onclick="showStep(1)">Back</button>
+                <button class="btn btn-primary flex-1" onclick="showStep(3)">Continue</button>
+            </div>
+        </div>
+        <!-- Step 3: Verify Code -->
+        <div id="step-3" style="display:none;">
+            <div class="mb-6">
+                <h2 class="mb-4">Enter Verification Code</h2>
+                <p class="mb-6">Enter the 6-digit code shown in your authenticator app:</p>
+                <div class="text-center mb-4">
+                    <input class="input-code" maxlength="6" inputmode="numeric" pattern="\d{6}" placeholder="000000" />
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <button class="btn btn-outline flex-1" onclick="showStep(2)">Back</button>
+                <button class="btn btn-primary flex-1" onclick="showStep(4)">Verify</button>
+            </div>
+        </div>
+        <!-- Step 4: Backup Codes -->
+        <div id="step-4" style="display:none;">
+            <div class="mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="icon-circle" style="background:#bbf7d0;padding:0.7rem;"><svg width="20" height="20" fill="none" stroke="#22c55e" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4"/></svg></div>
+                    <h2 class="text-gray-900">Save Your Backup Codes</h2>
+                </div>
+                <p class="mb-6">Store these codes in a safe place. You can use them to access your account if you lose your authenticator device.</p>
+                <div class="backup-codes mb-4">
+                    <div class="backup-code">1234-5678-9012</div>
+                    <div class="backup-code">2345-6789-0123</div>
+                    <div class="backup-code">3456-7890-1234</div>
+                    <div class="backup-code">4567-8901-2345</div>
+                    <div class="backup-code">5678-9012-3456</div>
+                </div>
+                <div class="alert">
+                    <span style="font-size:1.5rem;">⚠️</span>
+                    <div>
+                        <div style="font-weight:600;">Important</div>
+                        <div>Each backup code can only be used once. Keep them secure and confidential.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <button class="btn btn-outline flex-1" onclick="navigator.clipboard.writeText('1234-5678-9012\n2345-6789-0123\n3456-7890-1234\n4567-8901-2345\n5678-9012-3456')">Copy Codes</button>
+                <button class="btn btn-primary flex-1" onclick="window.location.href='/dashboard'">I've Saved Them</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

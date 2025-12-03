@@ -1,0 +1,92 @@
+<!-- seller-submission-confirmation.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Submission Confirmation</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="/css/main.css">
+    <style>
+        body { background: #f9fafb; }
+        .card { background: #fff; border-radius: 1.25rem; box-shadow: 0 2px 16px rgba(0,0,0,0.07); padding: 2.5rem; max-width: 36rem; margin: 3rem auto; }
+        .icon-circle { background: #d1fae5; border-radius: 9999px; padding: 1.5rem; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
+        .icon-circle svg { color: #059669; width: 3rem; height: 3rem; }
+        .status-card { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .badge { background: #f59e42; color: #fff; border-radius: 0.5rem; padding: 0.25rem 0.75rem; font-weight: 600; font-size: 0.95rem; }
+        .step-circle { background: #2563eb; color: #fff; border-radius: 9999px; width: 1.5rem; height: 1.5rem; display: flex; align-items: center; justify-content: center; font-weight: 600; margin-right: 0.75rem; }
+        .btn { display: inline-block; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; text-align: center; transition: background 0.2s; }
+        .btn-primary { background: #2563eb; color: #fff; border: none; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-outline { background: #fff; color: #2563eb; border: 2px solid #2563eb; }
+        .btn-outline:hover { background: #f1f5f9; }
+        .flex-row { display: flex; gap: 1rem; }
+        .flex-col { display: flex; flex-direction: column; gap: 1rem; }
+        .text-center { text-align: center; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .max-w-lg { max-width: 32rem; margin-left: auto; margin-right: auto; }
+        @media (max-width: 640px) { .card { padding: 1rem; } }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="text-center mb-8">
+            <div class="icon-circle">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4"/></svg>
+            </div>
+            <h1 class="mb-3">Documents Submitted Successfully!</h1>
+            <p class="max-w-lg mx-auto">Your seller account is under review. Our admin team will verify your documents and you'll receive an email notification once the review is complete.</p>
+        </div>
+        <div class="status-card mb-6">
+            <div class="flex-row mb-4" style="justify-content: space-between; align-items: center;">
+                <h2>Application Status</h2>
+                <span class="badge">PENDING REVIEW</span>
+            </div>
+            <div class="flex-row" style="gap: 2rem;">
+                <div>
+                    <div style="color: #64748b;">Submitted Date</div>
+                    <div th:text="${submittedDate}">20/11/2025</div>
+                </div>
+                <div>
+                    <div style="color: #64748b;">Expected Approval</div>
+                    <div th:text="${expectedApproval}">23/11/2025</div>
+                </div>
+            </div>
+        </div>
+        <div class="mb-8">
+            <h2 class="mb-4">What Happens Next?</h2>
+            <div class="flex-col">
+                <div class="flex-row">
+                    <span class="step-circle">1</span>
+                    <div>
+                        <div>Document Review</div>
+                        <p style="color: #64748b;">Our admin team will carefully review all submitted documents</p>
+                    </div>
+                </div>
+                <div class="flex-row">
+                    <span class="step-circle">2</span>
+                    <div>
+                        <div>Verification Process</div>
+                        <p style="color: #64748b;">Documents will be verified with relevant authorities (RNP, Land Authority, etc.)</p>
+                    </div>
+                </div>
+                <div class="flex-row">
+                    <span class="step-circle">3</span>
+                    <div>
+                        <div>Approval Notification</div>
+                        <p style="color: #64748b;">You'll receive an email with the approval decision and next steps</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex-row" style="gap: 1rem;">
+            <a th:href="@{/login}" href="/login" class="btn btn-primary flex-1">Go to Login</a>
+            <a th:href="@{/seller/dashboard}" href="/seller/dashboard" class="btn btn-outline flex-1">Track Application Status</a>
+        </div>
+        <div class="mt-6 text-center">
+            <p style="color: #64748b;">Questions about your application? <a href="#" style="color: #2563eb; text-decoration: underline;">Contact Support</a></p>
+        </div>
+    </div>
+</body>
+</html>

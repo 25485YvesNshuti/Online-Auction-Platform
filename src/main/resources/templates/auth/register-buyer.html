@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Buyer</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}" />
+    <style>
+      .input-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+      }
+      .progress-bar-outer { background: #e5e7eb; border-radius: 8px; height: 8px; width: 100%; margin-bottom: 8px; }
+      .progress-bar-inner { background: #2563eb; height: 100%; border-radius: 8px; transition: width 0.3s; }
+      .password-strength { font-size: 13px; margin-top: 4px; }
+      .show-hide-btn { position: absolute; right: 36px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #888; cursor: pointer; font-size: 13px; }
+      .terms-text { font-size: 13px; color: #555; opacity: 0.85; margin: 0; line-height: 1.5; }
+      .terms-link { color: #2563eb; text-decoration: underline; font-weight: 500; }
+      .form-group label { font-size: 13px !important; }
+      .form-group input, .form-group select { font-size: 13px !important; height: 38px !important; padding: 0 10px !important; }
+      .btn-signup { font-size: 14px !important; height: 38px !important; }
+      h2 { font-size: 20px !important; }
+      .form-group, .terms, .login-link, .progress-bar-outer, .progress-bar-inner, .password-strength, .terms-text, .terms-link, .btn-signup {
+        font-family: 'Inter', Segoe UI, Arial, sans-serif;
+      }
+    </style>
+</head>
+<body>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f7f8fa;font-family:'Inter',Segoe UI,Arial,sans-serif;">
+  <div style="background:#fff;border-radius:1.25rem;box-shadow:0 4px 24px rgba(0,0,0,0.08);padding:2.5rem;max-width:420px;width:100%;">
+    <div style="margin-bottom:24px;">
+      <a href="/" style="display:inline-flex;align-items:center;gap:6px;color:#2563eb;text-decoration:none;font-size:15px;font-weight:500;">&larr; Back to Home</a>
+    </div>
+    <div style="margin-bottom:24px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="color:#64748b;font-size:15px;font-weight:500;">Step 1 of 2</span>
+        <span style="color:#64748b;font-size:15px;font-weight:500;">50%</span>
+      </div>
+      <div style="height:8px;background:#e5e7eb;border-radius:8px;width:100%;margin-bottom:8px;">
+        <div style="background:#10162f;height:100%;border-radius:8px;width:50%;transition:width 0.3s;"></div>
+      </div>
+    </div>
+    <div style="margin-bottom:24px;text-align:center;">
+      <h2 style="color:#10162f;margin:0 0 8px 0;font-size:22px;font-weight:700;line-height:1.2;">Create Your Buyer Account</h2>
+      <div style="color:#555;font-size:16px;font-weight:400;">Join Rwanda's premier auction platform</div>
+    </div>
+    <form th:object="${buyerRegistrationDTO}" th:action="@{/auth/register-buyer}" method="post" autocomplete="off" id="buyerSignupForm">
+      <div class="form-group" style="margin-bottom:18px;">
+        <label for="fullName" style="display:block;color:#222;font-size:15px;font-weight:600;margin-bottom:6px;">Full Name</label>
+        <input type="text" th:field="*{fullName}" id="fullName" name="fullName" placeholder="Enter your full name" required style="width:100%;height:44px;padding:0 12px;border:1px solid #e0e3ea;border-radius:8px;font-size:15px;background:#f7f8fa;font-weight:500;" />
+        <div th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" style="color:#e11d48;font-size:14px;margin-top:2px;"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:18px;position:relative;">
+        <label for="email" style="display:block;color:#222;font-size:15px;font-weight:600;margin-bottom:6px;">Email Address</label>
+        <div style="position:relative;width:100%;">
+          <input type="email" th:field="*{email}" id="email" name="email" placeholder="your.email@example.com" required style="width:100%;height:44px;padding:0 12px;border:1px solid #e0e3ea;border-radius:8px;font-size:15px;background:#f7f8fa;font-weight:500;" />
+          <span class="input-icon" id="emailIcon" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);"></span>
+        </div>
+        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color:#e11d48;font-size:14px;margin-top:2px;"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:18px;">
+        <label for="phone" style="display:block;color:#222;font-size:15px;font-weight:600;margin-bottom:6px;">Phone Number</label>
+        <input type="text" th:field="*{phone}" id="phone" name="phone" placeholder="+250 XXX XXX XXX" required style="width:100%;height:44px;padding:0 12px;border:1px solid #e0e3ea;border-radius:8px;font-size:15px;background:#f7f8fa;font-weight:500;" />
+        <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" style="color:#e11d48;font-size:14px;margin-top:2px;"></div>
+        <div style="font-size:14px;color:#888;margin-bottom:12px;font-weight:400;">Rwanda country code (+250)</div>
+      </div>
+      <div class="form-group" style="margin-bottom:18px;position:relative;">
+        <label for="password" style="display:block;color:#222;font-size:15px;font-weight:600;margin-bottom:6px;">Password</label>
+        <div style="position:relative;width:100%;">
+          <input type="password" th:field="*{password}" id="password" name="password" placeholder="Enter a strong password" required style="width:100%;height:44px;padding:0 12px;border:1px solid #e0e3ea;border-radius:8px;font-size:15px;background:#f7f8fa;font-weight:500;" />
+          <button type="button" class="show-hide-btn" onclick="togglePassword('password','passwordEye')" style="position:absolute;right:36px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0;outline:none;"><span id="passwordEye">&#128065;</span></button>
+          <span class="input-icon" id="passwordIcon" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);"></span>
+        </div>
+        <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color:#e11d48;font-size:14px;margin-top:2px;"></div>
+        <div class="password-strength" id="passwordStrength"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:18px;position:relative;">
+        <label for="confirmPassword" style="display:block;color:#222;font-size:15px;font-weight:600;margin-bottom:6px;">Confirm Password</label>
+        <div style="position:relative;width:100%;">
+          <input type="password" th:field="*{confirmPassword}" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" required style="width:100%;height:44px;padding:0 12px;border:1px solid #e0e3ea;border-radius:8px;font-size:15px;background:#f7f8fa;font-weight:500;" />
+          <button type="button" class="show-hide-btn" onclick="togglePassword('confirmPassword','confirmPasswordEye')" style="position:absolute;right:36px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0;outline:none;"><span id="confirmPasswordEye">&#128065;</span></button>
+          <span class="input-icon" id="confirmPasswordIcon" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);"></span>
+        </div>
+        <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" style="color:#e11d48;font-size:14px;margin-top:2px;"></div>
+      </div>
+      <div class="form-group terms" style="display:flex;align-items:flex-start;gap:10px;margin-bottom:18px;">
+          <input type="checkbox" id="terms" name="terms" required style="width:18px;height:18px;accent-color:#2563eb;opacity:0.85;margin-top:3px;flex-shrink:0;" />
+          <label for="terms" style="font-size:15px;color:#555;opacity:0.85;margin:0;line-height:1.5;font-weight:400;display:inline;white-space:normal;">
+            I agree to the <a href="#" style="color:#2563eb;text-decoration:underline;font-weight:500;display:inline;">Terms & Conditions</a> and <a href="#" style="color:#2563eb;text-decoration:underline;font-weight:500;display:inline;">Privacy Policy</a>.
+          </label>
+      </div>
+      <button type="submit" class="btn-signup" id="buyerSignupBtn" style="width:100%;background:#2563eb;color:#fff;border:none;border-radius:8px;height:44px;font-size:16px;font-weight:600;cursor:pointer;opacity:0.95;transition:opacity 0.2s,background 0.2s;">Sign Up</button>
+    </form>
+    <div style="margin-top:24px;text-align:center;color:#888;font-size:15px;font-weight:400;">
+      Already have an account? <a href="/auth/login" style="color:#2563eb;text-decoration:none;font-weight:500;">Login</a>
+    </div>
+    <script>
+    // Show 'Please wait...' on submit
+    document.getElementById('buyerSignupForm').addEventListener('submit', function(e) {
+        var btn = document.getElementById('buyerSignupBtn');
+        btn.disabled = true;
+        btn.textContent = 'Please wait...';
+    });
+
+    // Email validation
+    function validateEmail() {
+        const email = document.getElementById('email').value;
+        const icon = document.getElementById('emailIcon');
+        const error = document.getElementById('emailError');
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email.length === 0) { icon.innerHTML = ''; error.style.display = 'none'; return; }
+        if (regex.test(email)) {
+            icon.innerHTML = '<svg width="20" height="20" fill="none" stroke="#22c55e" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4"/></svg>';
+            error.style.display = 'none';
+        } else {
+            icon.innerHTML = '<svg width="20" height="20" fill="none" stroke="#e11d48" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 9l-6 6M9 9l6 6"/></svg>';
+            error.style.display = 'block';
+        }
+    }
+    
+    // Password strength
+    function updatePasswordStrength() {
+        const pwd = document.getElementById('password').value;
+        const strengthDiv = document.getElementById('passwordStrength');
+        const icon = document.getElementById('passwordIcon');
+        let strength = '', color = '', percent = 0;
+        if (pwd.length === 0) { strengthDiv.textContent = ''; icon.innerHTML = ''; return; }
+        if (pwd.length < 6) { strength = 'Weak'; color = '#ef4444'; percent = 25; }
+        else if (pwd.length < 8) { strength = 'Fair'; color = '#f59e42'; percent = 50; }
+        else if (pwd.length < 12) { strength = 'Good'; color = '#2563eb'; percent = 75; }
+        else { strength = 'Strong'; color = '#22c55e'; percent = 100; }
+        strengthDiv.innerHTML = `<span style='color:${color};font-weight:600;'>${strength}</span> <span style='float:right;'>${percent}%</span><div style='height:8px;background:#e5e7eb;border-radius:8px;margin-top:4px;'><div style='height:8px;background:${color};border-radius:8px;width:${percent}%;transition:width 0.3s;'></div></div>`;
+        icon.innerHTML = percent >= 75 ? '<svg width="20" height="20" fill="none" stroke="#22c55e" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4"/></svg>' : '';
+    }
+    
+    // Password validation
+    function validatePassword() {
+        const pwd = document.getElementById('password').value;
+        const error = document.getElementById('passwordError');
+        if (pwd.length > 0 && pwd.length < 8) error.style.display = 'block';
+        else error.style.display = 'none';
+    }
+    
+    // Confirm password validation
+    function validateConfirmPassword() {
+        const pwd = document.getElementById('password').value;
+        const cpwd = document.getElementById('confirmPassword').value;
+        const icon = document.getElementById('confirmPasswordIcon');
+        const error = document.getElementById('confirmPasswordError');
+        if (cpwd.length === 0) { icon.innerHTML = ''; error.style.display = 'none'; return; }
+        if (pwd === cpwd) {
+            icon.innerHTML = '<svg width="20" height="20" fill="none" stroke="#22c55e" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2l4-4"/></svg>';
+            error.style.display = 'none';
+        } else {
+            icon.innerHTML = '<svg width="20" height="20" fill="none" stroke="#e11d48" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 9l-6 6M9 9l6 6"/></svg>';
+            error.style.display = 'block';
+        }
+    }
+    
+    // Show/hide password
+    function togglePassword(id, eyeId) {
+        var pwd = document.getElementById(id);
+        var icon = document.getElementById(eyeId);
+        if (pwd.type === 'password') {
+            pwd.type = 'text';
+            icon.textContent = '\u{1F441}\u{FE0E}';
+        } else {
+            pwd.type = 'password';
+            icon.textContent = '\u{1F441}';
+        }
+    }
+    </script>
+  </div>
+</div>
+</body>
+</html>

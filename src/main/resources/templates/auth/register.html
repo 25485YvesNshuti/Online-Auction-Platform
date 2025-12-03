@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Your Buyer Account</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}" />
+    <style>
+        label { font-size: 13px !important; }
+        input, select { font-size: 13px !important; height: 38px !important; padding: 0 10px !important; }
+        button { font-size: 14px !important; height: 38px !important; }
+        h2 { font-size: 20px !important; }
+    </style>
+</head>
+<body>
+<div class="auth-container">
+    <h2>Create Your Buyer Account</h2>
+    <form th:action="@{/register}" th:object="${registerRequest}" method="post">
+        <div>
+            <label>Full Name</label>
+            <input type="text" th:field="*{fullName}" required />
+            <div th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="error"></div>
+        </div>
+        <div>
+            <label>Email Address</label>
+            <input type="email" th:field="*{email}" required />
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></div>
+        </div>
+        <div>
+            <label>Phone Number</label>
+            <input type="text" th:field="*{phone}" placeholder="+250..." required />
+            <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error"></div>
+        </div>
+        <div>
+            <label>Password</label>
+            <input type="password" th:field="*{password}" required minlength="8" />
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></div>
+        </div>
+        <div>
+            <label>Confirm Password</label>
+            <input type="password" th:field="*{confirmPassword}" required />
+            <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="error"></div>
+        </div>
+        <input type="hidden" th:field="*{role}" value="BUYER" />
+        <div>
+            <input type="checkbox" required /> I agree to the <a href="#">Terms & Conditions</a>
+        </div>
+        <div th:if="${error}" class="error">[[${error}]]</div>
+        <button type="submit" id="registerBtn">Sign Up</button
+    </form>
+        <script>
+        // Show 'Please wait...' on submit
+        document.querySelector('form[th\\:action="@{/register}"]').addEventListener('submit', function(e) {
+            var btn = document.getElementById('registerBtn');
+            btn.disabled = true;
+            btn.textContent = 'Please wait...';
+        });
+        </script>
+    <div class="progress">Step 1 of 2</div>
+    <div class="login-link">
+        Already have an account? <a th:href="@{/login}">Login</a>
+    </div>
+</div>
+</body>
+</html>
