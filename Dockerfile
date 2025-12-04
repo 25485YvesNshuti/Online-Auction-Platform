@@ -6,7 +6,7 @@ RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-COPY --from=build /app/target/Online-Auction-Platform-0.0.1-SNAPSHOT.jar.original app.jar
+COPY --from=build /app/target/Online-Auction-Platform-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the port your Spring Boot app runs on
 EXPOSE 8080
