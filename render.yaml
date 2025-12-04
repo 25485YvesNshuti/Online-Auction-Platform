@@ -1,7 +1,7 @@
 services:
   - type: web
     name: online-auction-platform
-    env: java
+    runtime: java
     buildCommand: ./mvnw clean package
     startCommand: ./mvnw spring-boot:run
     repo: https://github.com/25485YvesNshuti/Online-Auction-Platform
