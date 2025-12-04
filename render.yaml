@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: online-auction-platform
+    env: java
+    buildCommand: ./mvnw clean package
+    startCommand: ./mvnw spring-boot:run
+    repo: https://github.com/25485YvesNshuti/Online-Auction-Platform
+    branch: main
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      # Add other environment variables here as needed
